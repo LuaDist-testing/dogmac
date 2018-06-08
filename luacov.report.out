@@ -1,5 +1,5 @@
 ==============================================================================
-/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.alpha4-1/bin/dogmac
+/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.alpha5-1/bin/dogmac
 ==============================================================================
      #!/usr/bin/env lua
 
@@ -12,7 +12,7 @@
   24 local cli = require("cliargs")
 
      --internal data
-  24 local VERSION = "1.0.alpha4-1"
+  24 local VERSION = "1.0.alpha5-1"
      local FOOT = [[
      Proudly made with ♥ in Valencia, Spain, EU.
      Copyright (c) 2017 Justo Labs.
@@ -156,12 +156,12 @@
          end
 
          while true do
- 106       local tok = lex:next()
+ 110       local tok = lex:next()
 
- 105       if tok == nil then
+ 109       if tok == nil then
              break
            else
-  99         if opts.show then print(tok) end
+ 103         if opts.show then print(tok) end
            end
          end
        end
@@ -235,7 +235,7 @@ Summary
 
 File                                                                 Hits Missed Coverage
 -----------------------------------------------------------------------------------------
-/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.alpha4-1/bin/dogmac 30   0      100.00%
+/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.alpha5-1/bin/dogmac 30   0      100.00%
 /home/me/.luarocks/share/lua/5.3/dogmac/js.lua                       40   0      100.00%
 /home/me/.luarocks/share/lua/5.3/dogmac/linter.lua                   41   0      100.00%
 -----------------------------------------------------------------------------------------

@@ -1,1 +1,1 @@
-export type Coord2D($x:num, $y:num)
+export type Coord2D(.x:num, .y:num)

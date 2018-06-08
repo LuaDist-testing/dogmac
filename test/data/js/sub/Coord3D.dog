@@ -1,1 +1,1 @@
-export type Coord3D(x?, y?, $z) : Coord2D(x, y)
+export type Coord3D(x?, y?, .z) : Coord2D(x, y)

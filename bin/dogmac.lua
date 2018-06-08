@@ -9,7 +9,7 @@ end
 local cli = require("cliargs")
 
 --internal data
-local VERSION = "1.0.alpha4-1"
+local VERSION = "1.0.alpha5-1"
 local FOOT = [[
 Proudly made with ♥ in Valencia, Spain, EU.
 Copyright (c) 2017 Justo Labs.
