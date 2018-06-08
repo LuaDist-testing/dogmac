@@ -1,5 +1,5 @@
 ==============================================================================
-/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.beta1-0/bin/dogmac
+/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.beta2-0/bin/dogmac
 ==============================================================================
      #!/usr/bin/env lua
 
@@ -12,7 +12,7 @@
   25 local cli = require("cliargs")
 
      --internal data
-  25 local VERSION = "1.0.beta1"
+  25 local VERSION = "1.0.beta2"
      local FOOT = [[
      Proudly made with ♥ in Valencia, Spain, EU.
      Copyright (c) 2017 Justo Labs.
@@ -235,7 +235,7 @@ Summary
 
 File                                                                Hits Missed Coverage
 ----------------------------------------------------------------------------------------
-/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.beta1-0/bin/dogmac 30   0      100.00%
+/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.beta2-0/bin/dogmac 30   0      100.00%
 /home/me/.luarocks/share/lua/5.3/dogmac/js.lua                      40   0      100.00%
 /home/me/.luarocks/share/lua/5.3/dogmac/linter.lua                  41   0      100.00%
 ----------------------------------------------------------------------------------------
