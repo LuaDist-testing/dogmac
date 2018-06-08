@@ -1,10 +1,10 @@
 -- This file was automatically generated for the LuaDist project.
 
 package = "dogmac"
-version = "1.0.alpha8-0"
+version = "1.0.alpha9-0"
 -- LuaDist source
 source = {
-  tag = "1.0.alpha8-0",
+  tag = "1.0.alpha9-0",
   url = "git://github.com/LuaDist-testing/dogmac.git"
 }
 -- Original source
@@ -22,7 +22,7 @@ description = {
 }
 dependencies = {
   "lua >= 5.3",
-  "dogma-core >= 1.0.alpha8",
+  "dogma-core >= 1.0.alpha9",
   "lua_cliargs >= 3.0",
   "penlight >= 1.5"
 }
