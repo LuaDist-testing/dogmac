@@ -4,11 +4,6 @@ local file = require("pl.file")
 local dir = require("pl.dir")
 local Parser = require("dogma.syn.Parser")
 
-local PRE = [[
-//imports
-import {any, bool, func, list, map, num, promise, proxy, text, abstract, dogma, exec, keys, len, print, printf, todo, typename} from "dogmalang";
-]]
-
 local function transJs(opts)
   local Trans = require("dogma.trans.js.Trans")
   local parser, trans = Parser.new(), Trans.new()
@@ -20,7 +15,8 @@ local function transJs(opts)
 
     local ok, res = pcall(function()
       parser:parse(file.read(opts.src))
-      code = PRE .. trans:next()
+      code = trans:next({importDogmalang = true})
+      
       dir.makepath(path.dirname(opts.dst))
       file.write(opts.dst, code)
     end)
