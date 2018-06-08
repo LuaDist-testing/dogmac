@@ -1,4 +1,4 @@
-std = "lua51"
+std = "lua53"
 
 ignore = {
   "143",  --Accessing an undefined field of a global variable.

@@ -1,5 +1,5 @@
 ==============================================================================
-/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.alpha1-3/bin/dogmac
+/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.alpha2-1/bin/dogmac
 ==============================================================================
      #!/usr/bin/env lua
 
@@ -69,7 +69,7 @@
 
      local PRE = [[
      //imports
-     import {any, bool, func, list, map, num, promise, proxy, text, abstract, dogma, keys, len, print, printf, todo, typename} from "dogmalang";
+     import {any, bool, func, list, map, num, promise, proxy, text, abstract, dogma, exec, keys, len, print, printf, todo, typename} from "dogmalang";
    7 ]]
 
      local function transJs(opts)
@@ -239,7 +239,7 @@ Summary
 
 File                                                                 Hits Missed Coverage
 -----------------------------------------------------------------------------------------
-/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.alpha1-3/bin/dogmac 30   0      100.00%
+/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.alpha2-1/bin/dogmac 30   0      100.00%
 /home/me/.luarocks/share/lua/5.3/dogmac/js.lua                       41   0      100.00%
 /home/me/.luarocks/share/lua/5.3/dogmac/linter.lua                   41   0      100.00%
 -----------------------------------------------------------------------------------------

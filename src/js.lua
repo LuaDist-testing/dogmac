@@ -6,7 +6,7 @@ local Parser = require("dogma.syn.Parser")
 
 local PRE = [[
 //imports
-import {any, bool, func, list, map, num, promise, proxy, text, abstract, dogma, keys, len, print, printf, todo, typename} from "dogmalang";
+import {any, bool, func, list, map, num, promise, proxy, text, abstract, dogma, exec, keys, len, print, printf, todo, typename} from "dogmalang";
 ]]
 
 local function transJs(opts)
