@@ -1,10 +1,10 @@
 -- This file was automatically generated for the LuaDist project.
 
 package = "dogmac"
-version = "1.0.alpha1-2"
+version = "1.0.alpha1-3"
 -- LuaDist source
 source = {
-  tag = "1.0.alpha1-2",
+  tag = "1.0.alpha1-3",
   url = "git://github.com/LuaDist-testing/dogmac.git"
 }
 -- Original source
