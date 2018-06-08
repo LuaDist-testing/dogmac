@@ -1,0 +1,1 @@
+export type Coord4D(x?, y?, z?, a) : Coord3D(x, y, z)

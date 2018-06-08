@@ -1,50 +1,50 @@
 ==============================================================================
-/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.alpha9-0/bin/dogmac
+/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.alpha10-0/bin/dogmac
 ==============================================================================
      #!/usr/bin/env lua
 
      --enable LuaCov if needed
-  95 for _, val in ipairs({...}) do
-  71   if val == "-c" then require("luacov") end
+ 100 for _, val in ipairs({...}) do
+  75   if val == "-c" then require("luacov") end
      end
 
      --imports
-  24 local cli = require("cliargs")
+  25 local cli = require("cliargs")
 
      --internal data
-  24 local VERSION = "1.0.alpha9-0"
+  25 local VERSION = "1.0.alpha10"
      local FOOT = [[
      Proudly made with ♥ in Valencia, Spain, EU.
      Copyright (c) 2017 Justo Labs.
-  24 ]]
+  25 ]]
 
      --command line definition
-  24 cli:set_name("dogmac")
-  24 cli:set_description("Compiler for the Dogma language.")
+  25 cli:set_name("dogmac")
+  25 cli:set_description("Compiler for the Dogma language.")
 
- 168 cli:command("lint", "Check syntax.")
-  24    :splat("input", "File or dir to check.", nil, 100)
-  24    :option("-t, --type=lex|syn", "Type check.", "syn")
-  24    :flag("-l, --list", "List the files.", false)
-  24    :flag("-s, --show", "Show tokens or sentences.", false)
-  24    :flag("-c", "Enable LuaCov (for internal use).", false)
-  37    :action(function(opts) os.exit(require("dogmac.linter")(opts)) end)
+ 175 cli:command("lint", "Check syntax.")
+  25    :splat("input", "File or dir to check.", nil, 100)
+  25    :option("-t, --type=lex|syn", "Type check.", "syn")
+  25    :flag("-l, --list", "List the files.", false)
+  25    :flag("-s, --show", "Show tokens or sentences.", false)
+  25    :flag("-c", "Enable LuaCov (for internal use).", false)
+  38    :action(function(opts) os.exit(require("dogmac.linter")(opts)) end)
 
- 120 cli:command("js", "Transform/transpile to JavaScript.")
-  24    :splat("input", "File or dir to check.", nil, 100)
-  24    :option("-o, --out=dir", "Transform into the given dir.")
-  24    :flag("-c", "Enable LuaCov (for internal use).", false)
-  31    :action(function(opts) os.exit(require("dogmac.js")(opts)) end)
+ 125 cli:command("js", "Transform/transpile to JavaScript.")
+  25    :splat("input", "File or dir to check.", nil, 100)
+  25    :option("-o, --out=dir", "Transform into the given dir.")
+  25    :flag("-c", "Enable LuaCov (for internal use).", false)
+  33    :action(function(opts) os.exit(require("dogmac.js")(opts)) end)
 
-  24 cli:flag("-h, --help", "Show this help.", false)
-  24 cli:flag("-v, --version", "Show version.", false, function() print(VERSION); os.exit() end)
-  24 cli:flag("-c", "Enable LuaCov (for internal use).", false)
+  25 cli:flag("-h, --help", "Show this help.", false)
+  25 cli:flag("-v, --version", "Show version.", false, function() print(VERSION); os.exit() end)
+  25 cli:flag("-c", "Enable LuaCov (for internal use).", false)
 
      ----------
      -- main --
      ----------
 
-  24 local args, err = cli:parse()
+  25 local args, err = cli:parse()
 
    4 if not args and err then
    4   if err:find("^Usage:") then print() end
@@ -62,45 +62,45 @@
 /home/me/.luarocks/share/lua/5.3/dogmac/js.lua
 ==============================================================================
      --imports
-   7 local path = require("pl.path")
-   7 local file = require("pl.file")
-   7 local dir = require("pl.dir")
-   7 local Parser = require("dogma.syn.Parser")
+   8 local path = require("pl.path")
+   8 local file = require("pl.file")
+   8 local dir = require("pl.dir")
+   8 local Parser = require("dogma.syn.Parser")
 
      local function transJs(opts)
-   4   local Trans = require("dogma.trans.js.Trans")
-   4   local parser, trans = Parser.new(), Trans.new()
+   5   local Trans = require("dogma.trans.js.Trans")
+   5   local parser, trans = Parser.new(), Trans.new()
 
-   4   trans:transform(parser)
+   5   trans:transform(parser)
 
        local function transFile(opts)
          local code
 
-   8     local ok, res = pcall(function()
-   4       parser:parse(file.read(opts.src))
-   4       code = trans:next({importDogmalang = true})
-           
-   3       dir.makepath(path.dirname(opts.dst))
-   3       file.write(opts.dst, code)
+  12     local ok, res = pcall(function()
+   6       parser:parse(file.read(opts.src))
+   6       code = trans:next({importDogmalang = true})
+
+   5       dir.makepath(path.dirname(opts.dst))
+   5       file.write(opts.dst, code)
          end)
 
-   4     if not ok then
+   6     if not ok then
    1       error(opts.src  .. ": " .. require("pl.stringx").splitlines(res)[1]:match("^.+%.lua:[0-9]+: (.+)$"))
          end
        end
 
-   6   for _, i in ipairs(opts.input) do
-   4     if path.isfile(i) then
-   4       transFile({
-   2         src = i,
-   2         dst = path.join(opts.out, path.basename(i):gsub("%.dog$", "") .. ".js")
-   1       })
+   8   for _, i in ipairs(opts.input) do
+   5     if path.isfile(i) then
+   6       transFile({
+   3         src = i,
+   3         dst = path.join(opts.out, path.basename(i):gsub("%.dog$", "") .. ".js"):gsub("%.js%.js", ".js")
+   2       })
    2     elseif path.isdir(i) then
-   4       for e, d in dir.dirtree(i) do
-   3         if not d and e:find("%.dog$") then
-   4           transFile({
-   2             src = e,
-   2             dst = path.join(opts.out, e:gsub(i .. "/", ""):gsub("%.dog$", "") .. ".js")
+   6       for e, d in dir.dirtree(i) do
+   5         if not d and (e:find("%.dog$") and not e:find("%.py%.dog$")) then
+   6           transFile({
+   3             src = e,
+   3             dst = path.join(opts.out, e:gsub(i .. "/", ""):gsub("%.dog$", "") .. ".js"):gsub("%.js%.js$", ".js")
                })
              end
            end
@@ -112,21 +112,21 @@
      end
 
      return function(opts)
-   7   if opts.out == nil then
+   8   if opts.out == nil then
    2     print("out expected.")
    2     return 1
        end
 
-   5   if #opts.input == 0 then
+   6   if #opts.input == 0 then
    1     print("input expected.")
    1     return 1
        end
 
-   8   local ok, res = pcall(function()
-   4     return transJs(opts)
+  10   local ok, res = pcall(function()
+   5     return transJs(opts)
        end)
 
-   3   if not ok then
+   4   if not ok then
    1     res = require("pl.stringx").splitlines(res)[1]
    1     print(res:match("^.+%.lua:[0-9]+: (.+)"))
    1     return 1
@@ -233,10 +233,10 @@
 Summary
 ==============================================================================
 
-File                                                                 Hits Missed Coverage
------------------------------------------------------------------------------------------
-/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.alpha9-0/bin/dogmac 30   0      100.00%
-/home/me/.luarocks/share/lua/5.3/dogmac/js.lua                       40   0      100.00%
-/home/me/.luarocks/share/lua/5.3/dogmac/linter.lua                   41   0      100.00%
------------------------------------------------------------------------------------------
-Total                                                                111  0      100.00%
+File                                                                  Hits Missed Coverage
+------------------------------------------------------------------------------------------
+/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.alpha10-0/bin/dogmac 30   0      100.00%
+/home/me/.luarocks/share/lua/5.3/dogmac/js.lua                        40   0      100.00%
+/home/me/.luarocks/share/lua/5.3/dogmac/linter.lua                    41   0      100.00%
+------------------------------------------------------------------------------------------
+Total                                                                 111  0      100.00%

@@ -16,7 +16,7 @@ local function transJs(opts)
     local ok, res = pcall(function()
       parser:parse(file.read(opts.src))
       code = trans:next({importDogmalang = true})
-      
+
       dir.makepath(path.dirname(opts.dst))
       file.write(opts.dst, code)
     end)
@@ -30,14 +30,14 @@ local function transJs(opts)
     if path.isfile(i) then
       transFile({
         src = i,
-        dst = path.join(opts.out, path.basename(i):gsub("%.dog$", "") .. ".js")
+        dst = path.join(opts.out, path.basename(i):gsub("%.dog$", "") .. ".js"):gsub("%.js%.js", ".js")
       })
     elseif path.isdir(i) then
       for e, d in dir.dirtree(i) do
-        if not d and e:find("%.dog$") then
+        if not d and (e:find("%.dog$") and not e:find("%.py%.dog$")) then
           transFile({
             src = e,
-            dst = path.join(opts.out, e:gsub(i .. "/", ""):gsub("%.dog$", "") .. ".js")
+            dst = path.join(opts.out, e:gsub(i .. "/", ""):gsub("%.dog$", "") .. ".js"):gsub("%.js%.js$", ".js")
           })
         end
       end
