@@ -1,0 +1,15 @@
+return {
+  configfile = ".luacov",
+  statsfile = "luacov.stats.out",
+  reportfile = "luacov.report.out",
+  runreport = true,
+  deletestats = false,
+
+  exclude = {
+    "test"
+  },
+
+  include = {
+    "dogmac"
+  }
+}

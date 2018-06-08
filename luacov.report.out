@@ -1,0 +1,246 @@
+==============================================================================
+/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.alpha1-0/bin/dogmac
+==============================================================================
+     #!/usr/bin/env lua
+
+     --enable LuaCov if needed
+  95 for _, val in ipairs({...}) do
+  71   if val == "-c" then require("luacov") end
+     end
+
+     --imports
+  24 local cli = require("cliargs")
+
+     --internal data
+  24 local VERSION = "1.0.alpha1-0"
+     local FOOT = [[
+     Proudly made with ♥ in Valencia, Spain, EU.
+     Copyright (c) 2017 Justo Labs.
+  24 ]]
+
+     --command line definition
+  24 cli:set_name("dogmac")
+  24 cli:set_description("Compiler for the Dogma language.")
+
+ 168 cli:command("lint", "Check syntax.")
+  24    :splat("input", "File or dir to check.", nil, 100)
+  24    :option("-t, --type=lex|syn", "Type check.", "syn")
+  24    :flag("-l, --list", "List the files.", false)
+  24    :flag("-s, --show", "Show tokens or sentences.", false)
+  24    :flag("-c", "Enable LuaCov (for internal use).", false)
+  37    :action(function(opts) os.exit(require("dogmac.linter")(opts)) end)
+
+ 120 cli:command("js", "Transform/transpile to JavaScript.")
+  24    :splat("input", "File or dir to check.", nil, 100)
+  24    :option("-o, --out=dir", "Transform into the given dir.")
+  24    :flag("-c", "Enable LuaCov (for internal use).", false)
+  31    :action(function(opts) os.exit(require("dogmac.js")(opts)) end)
+
+  24 cli:flag("-h, --help", "Show this help.", false)
+  24 cli:flag("-v, --version", "Show version.", false, function() print(VERSION); os.exit() end)
+  24 cli:flag("-c", "Enable LuaCov (for internal use).", false)
+
+     ----------
+     -- main --
+     ----------
+
+  24 local args, err = cli:parse()
+
+   4 if not args and err then
+   4   if err:find("^Usage:") then print() end
+   4   print(err)
+   4   if err:find("^Usage:") then print(FOOT) end
+
+   4   if err:find("^Usage:") then
+   3     os.exit()
+       else
+   1     os.exit(1)
+       end
+     end
+
+==============================================================================
+/home/me/.luarocks/share/lua/5.3/dogmac/js.lua
+==============================================================================
+     --imports
+   7 local path = require("pl.path")
+   7 local file = require("pl.file")
+   7 local dir = require("pl.dir")
+   7 local Parser = require("dogma.syn.Parser")
+
+     local PRE = [[
+     //imports
+     import {any, bool, func, list, map, num, promise, proxy, text, abstract, dogma, keys, len, print, printf, todo, typename} from "dogma";
+   7 ]]
+
+     local function transJs(opts)
+   4   local Trans = require("dogma.trans.js.Trans")
+   4   local parser, trans = Parser.new(), Trans.new()
+
+   4   trans:transform(parser)
+
+       local function transFile(opts)
+         local code
+
+   8     local ok, res = pcall(function()
+   4       parser:parse(file.read(opts.src))
+   4       code = PRE .. trans:next()
+   3       dir.makepath(path.dirname(opts.dst))
+   3       file.write(opts.dst, code)
+         end)
+
+   4     if not ok then
+   1       error(opts.src  .. ": " .. require("pl.stringx").splitlines(res)[1]:match("^.+%.lua:[0-9]+: (.+)$"))
+         end
+       end
+
+   6   for _, i in ipairs(opts.input) do
+   4     if path.isfile(i) then
+   4       transFile({
+   2         src = i,
+   2         dst = path.join(opts.out, path.basename(i):gsub("%.dog$", "") .. ".js")
+   1       })
+   2     elseif path.isdir(i) then
+   4       for e, d in dir.dirtree(i) do
+   3         if not d and e:find("%.dog$") then
+   4           transFile({
+   2             src = e,
+   2             dst = path.join(opts.out, e:gsub(i .. "/", ""):gsub("%.dog$", "") .. ".js")
+               })
+             end
+           end
+         else
+   1       print(string.format("'%s' doesn't exist.", i))
+   1       os.exit(1)
+         end
+       end
+     end
+
+     return function(opts)
+   7   if opts.out == nil then
+   2     print("out expected.")
+   2     return 1
+       end
+
+   5   if #opts.input == 0 then
+   1     print("input expected.")
+   1     return 1
+       end
+
+   8   local ok, res = pcall(function()
+   4     return transJs(opts)
+       end)
+
+   3   if not ok then
+   1     res = require("pl.stringx").splitlines(res)[1]
+   1     print(res:match("^.+%.lua:[0-9]+: (.+)"))
+   1     return 1
+       end
+     end
+
+==============================================================================
+/home/me/.luarocks/share/lua/5.3/dogmac/linter.lua
+==============================================================================
+     --imports
+  13 local path = require("pl.path")
+  13 local file = require("pl.file")
+  13 local dir = require("pl.dir")
+
+     --Perform a scanning.
+     --
+     --@param opts:map
+     local function scan(opts)
+   6   local Lexer = require("dogma.lex.Lexer")
+   6   local lex = Lexer.new()
+
+       local function scanFile(f)
+   7     lex:scan(file.read(f), f)
+
+   7     if opts.list or opts.show then
+   2       print("=> FILE: " .. f)
+         end
+
+         while true do
+ 106       local tok = lex:next()
+
+ 105       if tok == nil then
+             break
+           else
+  99         if opts.show then print(tok) end
+           end
+         end
+       end
+
+  11   for _, i in ipairs(opts.input) do
+   7     if path.isfile(i) then
+   5       scanFile(i)
+   2     elseif path.isdir(i) then
+   3       for e, d in dir.dirtree(i) do
+   2         if not d and e:find("%.dog$") then
+   2           scanFile(e)
+             end
+           end
+         else
+   1       print(string.format("'%s' doesn't exist.", i))
+   1       os.exit(1)
+         end
+       end
+     end
+
+     local function parse(opts)
+   7   local Parser = require("dogma.syn.Parser")
+   7   local parser = Parser.new()
+
+       local function parseFile(f)
+   7     parser:parse(file.read(f), f)
+
+   7     if opts.list or opts.show then
+   2       print("=> FILE: " .. f)
+         end
+
+         while true do
+  14       local sent = parser:next()
+
+  13       if sent == nil then
+             break
+           end
+   7       if opts.show then
+   1         print(string.format("%s (%s, %s) => %s", sent.type, sent.line, sent.col, sent.subtype))
+           end
+         end
+       end
+
+  12   for _, i in ipairs(opts.input) do
+   7     if path.isfile(i) then
+   5       parseFile(i)
+   2     elseif path.isdir(i) then
+   3       for e, d in dir.dirtree(i) do
+   2         if not d and e:find("%.dog$") then
+   2           parseFile(e)
+             end
+           end
+         else
+   1       print(string.format("'%s' doesn't exist.", i))
+   1       os.exit(1)
+         end
+       end
+     end
+
+     return function(opts)
+  13   if opts.type == "lex" then
+   6     return scan(opts)
+       else
+   7     return parse(opts)
+       end
+     end
+
+==============================================================================
+Summary
+==============================================================================
+
+File                                                                 Hits Missed Coverage
+-----------------------------------------------------------------------------------------
+/home/me/.luarocks/lib/luarocks/rocks/dogmac/1.0.alpha1-0/bin/dogmac 30   0      100.00%
+/home/me/.luarocks/share/lua/5.3/dogmac/js.lua                       41   0      100.00%
+/home/me/.luarocks/share/lua/5.3/dogmac/linter.lua                   41   0      100.00%
+-----------------------------------------------------------------------------------------
+Total                                                                112  0      100.00%
