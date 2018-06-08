@@ -12,7 +12,7 @@ description = {
 }
 
 source = {
-  url = "https://bitbucket.org/dogmalang"
+  url = "git+https://bitbucket.org/dogmalang/dogmac.git"
 }
 
 dependencies = {

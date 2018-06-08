@@ -1,8 +1,16 @@
+-- This file was automatically generated for the LuaDist project.
+
 package = "dogmac"
-version = "1.0.alpha1-1"
+version = "1.0.alpha1-2"
+-- LuaDist source
 source = {
-   url = "git+https://bitbucket.org/dogmalang/dogmac.git"
+  tag = "1.0.alpha1-2",
+  url = "git://github.com/LuaDist-testing/dogmac.git"
 }
+-- Original source
+-- source = {
+--    url = "git+https://bitbucket.org/dogmalang/dogmac.git"
+-- }
 description = {
    summary = "Compiler for the Dogma language.",
    detailed = [[
